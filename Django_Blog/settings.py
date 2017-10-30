@@ -22,84 +22,43 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'blog',
-    'accounts'
-]
+INSTALLED_APPS = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
+                  'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles', 'blog',
+                  'accounts']
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+MIDDLEWARE = ['django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
+              'django.middleware.common.CommonMiddleware', 'django.middleware.csrf.CsrfViewMiddleware',
+              'django.contrib.auth.middleware.AuthenticationMiddleware',
+              'django.contrib.messages.middleware.MessageMiddleware',
+              'django.middleware.clickjacking.XFrameOptionsMiddleware', ]
 
 ROOT_URLCONF = 'Django_Blog.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+    {'BACKEND': 'django.template.backends.django.DjangoTemplates', 'DIRS': [os.path.join(BASE_DIR, 'templates')],
+     'APP_DIRS': True, 'OPTIONS': {
+        'context_processors': ['django.template.context_processors.debug', 'django.template.context_processors.request',
+                               'django.contrib.auth.context_processors.auth',
+                               'django.contrib.messages.context_processors.messages', ], }, }, ]
 
 WSGI_APPLICATION = 'Django_Blog.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'NAME': 'my_blog',
-        'USER': 'root',
-        'PASSWORD': 'root',
-    },
-}
+DATABASES = {'default': {'ENGINE': 'django.db.backends.mysql', 'HOST': '127.0.0.1', 'NAME': 'my_blog', 'USER': 'root',
+                         'PASSWORD': 'root', }, }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
+    'default': {'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache', 'LOCATION': '127.0.0.1:11211', }}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = [{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+                            {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+                            {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+                            {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', }, ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -118,62 +77,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'collect_static/')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/'), ]
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
-        },
-        'simple': {
-            'format': '%(levelname)s %(asctime)s %(message)s'
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'handlers': {
-        'log_file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'blog.log',
-            'maxBytes': 16777216,  # 16 MB
-            'formatter': 'verbose'
-        },
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'null': {
-            'class': 'logging.NullHandler',
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'Django_Blog': {
-            'handlers': ['log_file', 'console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    }
-}
-
+LOGGING = {'version': 1, 'disable_existing_loggers': True, 'formatters': {
+    'verbose': {'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s', },
+    'simple': {'format': '%(levelname)s %(asctime)s %(message)s'}, },
+           'filters': {'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse', },
+                       'require_debug_true': {'()': 'django.utils.log.RequireDebugTrue', }, }, 'handlers': {
+        'log_file': {'level': 'INFO', 'class': 'logging.handlers.RotatingFileHandler', 'filename': 'blog.log',
+                     'maxBytes': 16777216,  # 16 MB
+                     'formatter': 'verbose'},
+        'console': {'level': 'DEBUG', 'filters': ['require_debug_true'], 'class': 'logging.StreamHandler',
+                    'formatter': 'simple'}, 'null': {'class': 'logging.NullHandler', },
+        'mail_admins': {'level': 'ERROR', 'filters': ['require_debug_false'],
+                        'class': 'django.utils.log.AdminEmailHandler'}},
+           'loggers': {'Django_Blog': {'handlers': ['log_file', 'console'], 'level': 'INFO', 'propagate': True, },
+                       'django.request': {'handlers': ['mail_admins'], 'level': 'ERROR', 'propagate': False, }, }}
 
 AUTH_USER_MODEL = 'accounts.BlogUser'
+
+PAGINATE_BY = 10  # 分页大小

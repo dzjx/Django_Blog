@@ -123,7 +123,8 @@ class Article(BaseModel):
 
 class ArticleTag(BaseModel):
     """
-    建立这个类的目的是为了展示through 的用法， 这里面可以扩展多对多的额外关联数据，同时也可以自定义on_delete的操作，因为多对多默认是级联删除
+    建立这个类的目的是为了展示through 的用法， 这里面可以扩展多对多的额外关联数据(eg:created_time/modify_time)，
+    同时也可以自定义on_delete的操作，因为多对多默认是级联删除
     """
     article = models.ForeignKey(Article, verbose_name='文章', on_delete=models.CASCADE)  # 文章删除了 就把文章和标签的关系删除
     tag = models.ForeignKey(Tag, verbose_name='标签', on_delete=models.CASCADE)  # 标签删除了 就把文章和标签的关系删除
