@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
+
 from Django_Blog import utils
 
 
@@ -19,11 +21,14 @@ class Category(BaseModel):
     """
     文章分类
     """
-    name = models.CharField('分类名称', max_length=200, unique=True),
+    name = models.CharField('分类名称', max_length=30, unique=True)
     parent_category = models.ForeignKey('self', verbose_name='父级分类', blank=True, null=True)  # 默认级联删除
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('blog:category', kwargs={'category_name': self.name})
 
     @property
     @utils.decorator_cache(60 * 60 * 5)  # 缓存5分钟
@@ -70,7 +75,7 @@ class Category(BaseModel):
         return children_data
 
     class Meta:
-        ordering = ['-created_time']
+        ordering = ['name']
 
 
 class Tag(BaseModel):
@@ -119,6 +124,19 @@ class Article(BaseModel):
     category = models.ForeignKey(Category, verbose_name='分类', on_delete=models.SET_NULL, blank=True,
                                  null=True)  # 删除外键 设置为空
     tags = models.ManyToManyField(Tag, verbose_name='标签集合', through='ArticleTag')
+
+    def get_absolute_url(self):
+        return reverse('blog:detail', kwargs={
+            'article_id': self.id,
+            'year': self.created_time.year,
+            'month': self.created_time.month,
+            'day': self.created_time.day
+        })
+
+    def get_category_tree(self):
+        tree = self.category.category_parent()
+        names = list(map(lambda a: (a.name, a.get_absolute_url()), tree))
+        return names
 
 
 class ArticleTag(BaseModel):

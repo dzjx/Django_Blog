@@ -23,10 +23,10 @@ class ArticleListView(generic.ListView):
         value = utils.cache.get(key)
 
         if value:
-            utils.logger.info('获取缓存值 key： {1}'.format(key))
+            utils.logger.info('获取缓存值 key： {0}'.format(key))
             return value
         else:
-            utils.logger.info('设置缓存值 key： {1}'.format(key))
+            utils.logger.info('设置缓存值 key： {0}'.format(key))
             article_list = self.get_queryset_data()
             utils.cache.set(key, article_list, timeout=60 * 5)  # 缓存5 分钟
             return value
@@ -39,17 +39,16 @@ class ArticleListView(generic.ListView):
 
 
 class IndexView(ArticleListView):
-    def get(self, request, *args, **kwargs):
-        """
-        首页
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
-        """
-
     def get_queryset_cache_key(self):
         return 'index_{0}'.format(self.page_number)
 
     def get_queryset_data(self):
-        return bm.Article.objects.filter(type=bm.Article.TYPE[0][0], status=bm.Article.STATUS_CHOICES[1][0])
+        return bm.Article.objects.filter(type=bm.Article.TYPE[0][0], status=bm.Article.STATUS_CHOICES[1][0]).order_by(
+            '-pub_time')
+
+
+class DetailView(generic.DetailView):
+    pass
+
+class CategoryDetailView(generic.DetailView):
+    pass
