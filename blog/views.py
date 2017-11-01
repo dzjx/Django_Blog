@@ -24,12 +24,12 @@ class ArticleListView(generic.ListView):
 
         if value:
             utils.logger.info('获取缓存值 key： {0}'.format(key))
-            return value
         else:
+            value = self.get_queryset_data()
+            utils.cache.set(key, value, timeout=60 * 5)  # 缓存5 分钟
             utils.logger.info('设置缓存值 key： {0}'.format(key))
-            article_list = self.get_queryset_data()
-            utils.cache.set(key, article_list, timeout=60 * 5)  # 缓存5 分钟
-            return value
+
+        return value
 
     def get_queryset_cache_key(self):
         raise NotImplementedError()

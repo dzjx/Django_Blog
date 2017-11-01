@@ -33,9 +33,10 @@ class OnlineMiddleware(MiddlewareMixin):
         ip = get_real_ip(request)
         cache.set(ip, 0, 5 * 60)  # 有效期5 分钟
 
-        if ip not in online_ips:
+        if ip and ip not in online_ips:
             online_ips.append(ip)
             cache.set("online_ips", online_ips)
+        pass
 
     def process_response(self, request, response):
         cast_time = 0.001
