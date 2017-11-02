@@ -5,6 +5,7 @@ from django.views import generic
 
 from Django_Blog import utils
 from blog import models as bm
+from blog.models import Article
 
 
 class ArticleListView(generic.ListView):
@@ -47,8 +48,27 @@ class IndexView(ArticleListView):
             '-pub_time')
 
 
-class DetailView(generic.DetailView):
-    pass
+class ArticleDetailView(generic.DetailView):
+    template_name = 'blog/detail.html'
+    model = Article
+    context_object_name = "article"
+
+    def get_object(self, queryset=None):
+        """
+        添加浏览次数
+        :param queryset:
+        :return:
+        """
+        self.object = super(ArticleDetailView, self).get_object(queryset)
+        self.object.viewed()
+        return self.object
+
+    def get_context_data(self, **kwargs):
+        kwargs['next_article'] = self.object.next_article
+        kwargs['prev_article'] = self.object.prev_article
+
+        return super(ArticleDetailView, self).get_context_data(**kwargs)
+
 
 class CategoryDetailView(generic.DetailView):
     pass

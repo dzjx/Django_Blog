@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'compressor',
     'blog',
     'accounts',
-    'comments'
+    'comments',
+    'oauth'
 ]
 
 MIDDLEWARE = [
@@ -136,7 +137,7 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console','mail_admins'],
             'level': 'ERROR',
             'propagate': False,
         },
@@ -165,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 AUTH_USER_MODEL = 'accounts.BlogUser'
-PAGINATE_BY = 10  # 分页大小
+PAGINATE_BY = 1  # 分页大小
 SIDEBAR_ARTICLE_COUNT = 10  # 侧边栏文章数目
 SIDEBAR_COMMENT_COUNT = 5  # 侧边栏评论数目
 DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'

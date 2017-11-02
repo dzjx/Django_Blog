@@ -30,3 +30,6 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget = widgets.TextInput(attrs={'placeholder': "username", "class": "form-control"})
         self.fields['password'].widget = widgets.PasswordInput(
             attrs={'placeholder': "password", "class": "form-control"})
+
+
+

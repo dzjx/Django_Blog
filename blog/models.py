@@ -127,16 +127,40 @@ class Article(BaseModel):
 
     def get_absolute_url(self):
         return reverse('blog:detail', kwargs={
-            'article_id': self.id,
+            'pk': self.id,
             'year': self.created_time.year,
             'month': self.created_time.month,
             'day': self.created_time.day
         })
 
     def get_category_tree(self):
-        tree = self.category.category_parent()
-        names = list(map(lambda a: (a.name, a.get_absolute_url()), tree))
+        names = []
+        if self.category:
+            tree = self.category.category_parent()
+            names = list(map(lambda a: (a.name, a.get_absolute_url()), tree))
         return names
+
+    def next_article(self):
+        """
+        下一篇文章
+        :return:
+        """
+        return Article.objects.filter(id__gt=self.id, status=2).order_by('id').first()
+
+    def prev_article(self):
+        """
+        上一篇文章
+        :return:
+        """
+        return Article.objects.filter(id__lt=self.id, status=2).order_by('-id').first()
+
+    def viewed(self):
+        """
+        浏览
+        :return:
+        """
+        self.views += 1
+        self.save(update_fields=['views'])
 
 
 class ArticleTag(BaseModel):
