@@ -1,4 +1,5 @@
 from django.conf import settings
+from django import forms
 from django.shortcuts import render
 from django.http.response import HttpResponse
 from django.views import generic
@@ -6,6 +7,7 @@ from django.views import generic
 from Django_Blog import utils
 from blog import models as bm
 from blog.models import Article
+from comments.forms import CommentForm
 
 
 class ArticleListView(generic.ListView):
@@ -64,8 +66,23 @@ class ArticleDetailView(generic.DetailView):
         return self.object
 
     def get_context_data(self, **kwargs):
+        comment_form = CommentForm()
+
+        if self.request.user.is_authenticated and not self.request.user.is_anonymous:
+            comment_form.fields.update({
+                'email': forms.CharField(widget=forms.HiddenInput()),
+                'name': forms.CharField(widget=forms.HiddenInput()),
+            })
+            comment_form.fields["email"].initial = self.request.user.email
+            comment_form.fields["name"].initial = self.request.user.username
+
+        article_comments = self.object.comment_set.all()
+
         kwargs['next_article'] = self.object.next_article
         kwargs['prev_article'] = self.object.prev_article
+        kwargs['form'] = comment_form
+        kwargs['article_comments'] = article_comments
+        kwargs['comment_count'] = len(article_comments) if article_comments else 0
 
         return super(ArticleDetailView, self).get_context_data(**kwargs)
 

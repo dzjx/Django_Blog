@@ -4,6 +4,8 @@
 # @Author: Pen
 # @Date  : 2017-10-30 13:42
 # @Desc  : 自定义tags
+import hashlib
+import urllib
 
 from django import template
 from django.conf import settings
@@ -24,6 +26,14 @@ def datetime_format(date):
         return date.strftime(settings.DATE_TIME_FORMAT)
     except:
         return ""
+
+
+@register.filter
+def avatar_url(email, size):
+    email = email.encode('utf-8')
+    default = "https://resource.lylinux.net/image/2017/03/26/120117.jpg".encode('utf-8')
+    return "https://www.gravatar.com/avatar/%s?%s" % (
+        hashlib.md5(email.lower()).hexdigest(), urllib.parse.urlencode({'d': default, 's': str(size)}))
 
 
 @register.inclusion_tag('blog/tags/article_metas_info.html')
