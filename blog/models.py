@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
+
 from Django_Blog import utils
 
 
@@ -19,11 +21,14 @@ class Category(BaseModel):
     """
     文章分类
     """
-    name = models.CharField('分类名称', max_length=200, unique=True),
+    name = models.CharField('分类名称', max_length=30, unique=True)
     parent_category = models.ForeignKey('self', verbose_name='父级分类', blank=True, null=True)  # 默认级联删除
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('blog:category', kwargs={'category_name': self.name})
 
     @property
     @utils.decorator_cache(60 * 60 * 5)  # 缓存5分钟
@@ -70,7 +75,7 @@ class Category(BaseModel):
         return children_data
 
     class Meta:
-        ordering = ['-created_time']
+        ordering = ['name']
 
 
 class Tag(BaseModel):
@@ -120,10 +125,48 @@ class Article(BaseModel):
                                  null=True)  # 删除外键 设置为空
     tags = models.ManyToManyField(Tag, verbose_name='标签集合', through='ArticleTag')
 
+    def get_absolute_url(self):
+        return reverse('blog:detail', kwargs={
+            'pk': self.id,
+            'year': self.created_time.year,
+            'month': self.created_time.month,
+            'day': self.created_time.day
+        })
+
+    def get_category_tree(self):
+        names = []
+        if self.category:
+            tree = self.category.category_parent()
+            names = list(map(lambda a: (a.name, a.get_absolute_url()), tree))
+        return names
+
+    def next_article(self):
+        """
+        下一篇文章
+        :return:
+        """
+        return Article.objects.filter(id__gt=self.id, status=2).order_by('id').first()
+
+    def prev_article(self):
+        """
+        上一篇文章
+        :return:
+        """
+        return Article.objects.filter(id__lt=self.id, status=2).order_by('-id').first()
+
+    def viewed(self):
+        """
+        浏览
+        :return:
+        """
+        self.views += 1
+        self.save(update_fields=['views'])
+
 
 class ArticleTag(BaseModel):
     """
-    建立这个类的目的是为了展示through 的用法， 这里面可以扩展多对多的额外关联数据，同时也可以自定义on_delete的操作，因为多对多默认是级联删除
+    建立这个类的目的是为了展示through 的用法， 这里面可以扩展多对多的额外关联数据(eg:created_time/modify_time)，
+    同时也可以自定义on_delete的操作，因为多对多默认是级联删除
     """
     article = models.ForeignKey(Article, verbose_name='文章', on_delete=models.CASCADE)  # 文章删除了 就把文章和标签的关系删除
     tag = models.ForeignKey(Tag, verbose_name='标签', on_delete=models.CASCADE)  # 标签删除了 就把文章和标签的关系删除

@@ -100,3 +100,4 @@ ENV/
 # mypy
 
 .idea/
+collect_static/
