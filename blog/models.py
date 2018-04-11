@@ -136,7 +136,7 @@ class Article(BaseModel):
     def get_category_tree(self):
         names = []
         if self.category:
-            tree = self.category.category_parent()
+            tree = self.category.category_parent
             names = list(map(lambda a: (a.name, a.get_absolute_url()), tree))
         return names
 
